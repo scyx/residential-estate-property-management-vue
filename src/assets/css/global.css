@@ -1,0 +1,28 @@
+/* 全局样式 */
+html body #app{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+}
+.el-breadcrumb {
+    margin-bottom: 15px;
+}
+.el-card {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15) !important;
+}
+.f-header {
+    height:50px;
+    margin-bottom:10px;
+}
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+.fa-check:before {
+    content: '✓';
+}
