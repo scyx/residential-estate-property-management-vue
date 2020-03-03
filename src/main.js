@@ -46,9 +46,19 @@ Vue.prototype.selectByHouseHoldId = async function(id) {
         this.editform = res.data;
         console.log(this.editform);
       } else {
-        return this.$message.error('获取用户信息失败！');
+        return this.$message.error('获取住户信息失败！该住户可能不存在');
       }
 };
+// 通过id查询楼栋信息
+Vue.prototype.selectByHouseId = async function(id) {
+    const { data: res } = await this.$http.get('getHouseById/' + id);
+        if (res.code === 200) {
+          this.editform = res.data;
+          console.log(this.editform);
+        } else {
+          return this.$message.error('获取楼栋信息失败！楼栋可能不存在');
+        }
+  };
 // 菜单栏激活
 Vue.prototype.savepath = function(activepath) {
   window.sessionStorage.setItem('activepath', activepath);

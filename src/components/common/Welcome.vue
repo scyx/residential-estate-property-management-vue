@@ -2,11 +2,11 @@
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
       </el-breadcrumb>
     </el-card>
     <el-row :gutter="30">
-      <el-col :span="8">
+      <el-col :span="6">
         <el-card class="box-card">
           <div slot="header" class="card">
             <h3>业主</h3>
@@ -18,7 +18,19 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="6">
+        <el-card class="box-card">
+          <div slot="header" class="card">
+            <h3>住户</h3>
+            <el-tag effect="dark" class="sta">统计</el-tag>
+          </div>
+          <div class="contain">
+            <el-tag effect="dark" type="success" size="small" class="zonggong">总共</el-tag>
+            <span class="sum">{{numGroup.livePeopleNum}}</span>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
         <el-card class="box-card">
           <div slot="header" class="card">
             <h3>房屋</h3>
@@ -32,7 +44,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="6">
         <el-card class="box-card">
           <div slot="header" class="card">
             <h3>停车位</h3>

@@ -5,11 +5,11 @@ import Login from '../components/Login.vue';
 import Home from '../components/common/Home.vue';
 import Welcome from '../components/common/Welcome.vue';
 import Household from '../components/common/household/Household.vue';
-import Authority from '../components/common/Authority.vue';
+import Authority from '../components/common/Authority/Authority.vue';
 import User from '../components/common/User.vue';
 import HouseholdOwnMember from '../components/common/household/HouseholdOwnMember.vue';
 import Notice from '../components/common/Notice.vue';
-
+import House from '../components/common/House/House.vue';
 
 Vue.use(VueRouter);
 
@@ -74,6 +74,13 @@ const routes = [
         component: Notice,
         meta: {
           title: '公告管理'
+        }
+      },
+      {
+        path: '/house',
+        component: House,
+        meta: {
+          title: '楼栋管理'
         }
       },
     ],

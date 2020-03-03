@@ -29,6 +29,8 @@ module.exports = {
     'no-unused-vars': 0,
     'no-unreachable': 0,
     'import/no-extraneous-dependencies': 0,
+    "no-tabs":"off",
+    'indent' : 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
