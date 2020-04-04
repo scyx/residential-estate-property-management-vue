@@ -92,13 +92,16 @@
         :data="tableData"
         border
         stripe
+        :header-row-style="{'font-size':'13px','color':'black'}"
+        :cell-style="{'padding':'5px'}"
+        :row-style="{'padding':'0'}"
       >
         <el-table-column align="center" type="index" label="#"></el-table-column>
         <!-- <el-table-column prop="user_id" align="center" label="#" width="50"></el-table-column> -->
         <el-table-column prop="household_name" align="center" label="姓名" width="100"></el-table-column>
         <el-table-column prop="gender" align="center" label="性别" width="80"></el-table-column>
         <el-table-column prop="age" align="center" label="年龄" width="50"></el-table-column>
-        <el-table-column prop="birthday" align="center" label="出生日期" width="100"></el-table-column>
+        <el-table-column prop="birthday" align="center" label="出生日期" width="150"></el-table-column>
         <el-table-column prop="is_f" align="center" label="是否是业主" width="100"></el-table-column>
         <el-table-column prop="telephone" align="center" label="电话" width="200"></el-table-column>
         <el-table-column prop="address" align="center" label="地址"></el-table-column>
@@ -277,7 +280,8 @@ export default {
 						trigger: 'blur'
 					}
 				]
-			}
+            },
+            loading: false,
 		};
 	},
 	// 页面加载调用

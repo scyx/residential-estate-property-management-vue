@@ -26,3 +26,18 @@ html body #app{
 .fa-check:before {
     content: '✓';
 }
+.general-edit-button {
+    color: inherit;
+    margin-left: 5px;
+    border: 1px solid #e7eaec;
+    background: White;
+}
+.pagination {
+    text-align: center;
+}
+.edit-button {
+    color: inherit;
+    margin-left: 5px;
+    border: 1px solid #e7eaec;
+    background: White;
+}

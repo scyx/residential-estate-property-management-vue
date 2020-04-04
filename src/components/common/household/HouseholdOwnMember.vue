@@ -2,9 +2,11 @@
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item >首页</el-breadcrumb-item>
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
         <el-breadcrumb-item>业主管理</el-breadcrumb-item>
-        <el-breadcrumb-item><strong>业主成员</strong></el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <strong>业主成员</strong>
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </el-card>
     <el-card>
@@ -32,7 +34,6 @@
           title="选择业主"
           :visible.sync="dialogVisible"
           width="50%"
-          :before-close="handleClose"
           @close="dialogVisible=false"
         >
           <el-divider></el-divider>
@@ -45,9 +46,9 @@
             element-loading-spinner="el-icon-loading"
             element-loading-background="rgba(0, 0, 0, 0.8)"
             :data="houseHoldList"
-            header-row-style="font-size:13px;color:black;"
-            cell-style="padding:5px;;"
-            row-style="padding:0;"
+            :header-row-style="{'font-size':'13px','color':'black'}"
+            :cell-style="{'padding':'5px'}"
+            :row-style="{'padding':'0'}"
           >
             <el-table-column align="center" type="index" prop="index" label="#"></el-table-column>
             <!-- <el-table-column prop="user_id" align="center" label="#" width="50"></el-table-column> -->
@@ -69,7 +70,7 @@
           </el-table>
           <el-pagination
             small
-            layout="prev, pager, next"
+            layout="total,prev, pager, next"
             :total="total"
             @current-change="handleCurrentChange"
             :current-page.sync="queryInfo.pagenum"
@@ -162,9 +163,9 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
         :data="MemberList"
-        header-row-style="font-size:13px;color:black;"
-        cell-style="padding:5px;;"
-        row-style="padding:0;"
+        :header-row-style="{'font-size':'13px','color':'black'}"
+        :cell-style="{'padding':'5px'}"
+        :row-style="{'padding':'0'}"
       >
         <el-table-column align="center" type="index" prop="index" label="#"></el-table-column>
         <!-- <el-table-column prop="user_id" align="center" label="#" width="50"></el-table-column> -->
@@ -241,241 +242,270 @@
 
 <script>
 export default {
-  data() {
-    return {
-      // 选择业主的对话框
-      dialogVisible: false,
-      // 添加成员的对话框
-      addDialogFormVisible: false,
-      // 修改成员信息的对话框显示
-      editDialogVisible: false,
-      // 是否已经选中 默认为false 用来控制按钮是否显示
-      is_select: false,
-      //   dialog宽度
-      formLabelWidth: '80px',
-      // 当前选中的业主
-      CurrentHouseHold: {
-        household_id: '',
-        household_name: '',
-        telephone: '',
-        address: '',
-        gender: '',
-        age: '',
-        birthday: '',
-        create_user: ''
-      },
-      // 添加成员的表单
-      addForm: {
-        household_name: '',
-        telephone: '',
-        address: '',
-        gender: '',
-        birthday: '',
-        create_user: this.currentUser
-      },
-      // 修改成员信息对象
-      editform: {},
-      // 出生日期日期规定：不允许选择当前日期之后的日期
-      pickerOptions0: {
-        disabledDate(time) {
-          return time.getTime() > Date.now() - 8.64e6; // 如果没有后面的-8.64e6就是不可以选择今天的
-        }
-      },
-      // 查询参数
-      queryInfo: {
-        query: '',
-        // 页数
-        pagenum: 1,
-        // 每页显示几条
-        pagesize: 10
-      },
-      // 成员列表
-      MemberList: [],
-      // 总数
-      total: 0,
-      rules: {
-        household_name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' }
-        ],
-        gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-        telephone: [
-          { required: true, message: '请输入电话号码' },
-          { validator: this.checkTelephone, trigger: 'blur' }
-        ],
-        address: [{ required: true, message: '请输入地址', trigger: 'blur' }],
-        birthday: [
-          { required: true, message: '请选择出生日期', trigger: 'blur' }
-        ],
-      }
-    };
-  },
-  methods: {
-    // 打开对话框
-    openSelectDialog() {
-      this.dialogVisible = true;
-      this.getHouseHoldList();
-    },
-    // 获取业主列表
-    async getHouseHoldList() {
-      const { data: res } = await this.$http.get('getHouseHoldsIsFList', {
-        params: {
-          query: this.queryInfo.query,
-          pageNum: this.queryInfo.pagenum,
-          pageSize: this.queryInfo.pagesize
-        }
-      });
-      this.houseHoldList = res.data.list;
-      this.total = res.data.total;
-      console.log(res);
-    },
-    // 监听页码值
-    handleCurrentChange(newPage) {
-      this.queryInfo.pagenum = newPage;
-      this.getHouseHoldList();
-    },
-    // 选择具体业主
-    async chooseHouseHold(id) {
-      const { data: res } = await this.$http.get('getHouseHoldById/' + id);
-      if (res.code === 200) {
-        this.CurrentHouseHold = res.data;
-        this.dialogVisible = false;
-        this.is_select = true;
-        this.getMemberByHouseHoldId(id);
-      } else {
-        return this.$message.error('获取用户信息失败！');
-      }
-    },
-    // 查询
-    search() {
-      this.getHouseHoldList();
-    },
-    // 打开添加成员dialog
-    openAddDialog() {
-      this.addDialogFormVisible = true;
-    },
-    // 根据业主id获取成员列表
-    async getMemberByHouseHoldId(id) {
-      const { data: res } = await this.$http.get(
-        'getMembersByHouseHoldId/' + id
-      );
-      if (res.code === 200) {
-        this.MemberList = res.data;
-      }
-    },
-    // 给业主添加成员
-    async addMember(id) {
-      const { data: res } = await this.$http.post(
-        'addMemberByHouseHoldId/' + id,
-        this.addForm
-      );
-      if (res.code === 200) {
-        this.$message.success(res.msg);
-        this.closeDialog('addForm', 'addDialogFormVisible');
-        this.getMemberByHouseHoldId(id);
-      }
-    },
-    // 校验表单，通过就执行addMember,未通过就返回失败
-    submitForm(formName, id) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.addMember(id);
-        } else {
-          return false;
-        }
-      });
-    },
-    // 打开修改对话框
-    showEditDialog(id) {
-      console.log(id);
-      this.editDialogVisible = true;
-      this.selectByHouseHoldId(id);
-    },
-    // 提交修改验证表单
-    submitEditForm() {
-      this.$refs.editform.validate(valid => {
-        if (valid) {
-          this.editHouseHold();
-        } else {
-          return false;
-        }
-      });
-    },
-    // 编辑用户提交
-    async editHouseHold() {
-      const { data: res } = await this.$http.put(
-        'submitEdit/' + this.editform.household_id,
-        this.editform
-      );
-      console.log(res);
-      if (res.code === 200) {
-        this.$message.success('修改成功');
-        this.editDialogVisible = false;
-        this.getMemberByHouseHoldId(this.CurrentHouseHold.household_id);
-      }
-    },
-    // 删除业主
-    deleteById(id) {
-      this.$confirm('此操作将永久删除该成员, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.delete(id);
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-    },
-    async delete(id) {
-      const { data: res } = await this.$http.delete('deleteHouseHold/' + id);
-      if (res.code === 200) {
-        this.getMemberByHouseHoldId(this.CurrentHouseHold.household_id);
-        return this.$message.success(res.msg);
-      }
-      return this.$message.error(res.msg);
-    },
-    to() {
-      this.towelcome();
-    }
-  }
+	data() {
+		return {
+			// 选择业主的对话框
+			dialogVisible: false,
+			// 添加成员的对话框
+			addDialogFormVisible: false,
+			// 修改成员信息的对话框显示
+			editDialogVisible: false,
+			// 是否已经选中 默认为false 用来控制按钮是否显示
+			is_select: false,
+			//   dialog宽度
+			formLabelWidth: '80px',
+			// 当前选中的业主
+			CurrentHouseHold: {
+				household_id: '',
+				household_name: '',
+				telephone: '',
+				address: '',
+				gender: '',
+				age: '',
+				birthday: '',
+				create_user: ''
+			},
+			// 添加成员的表单
+			addForm: {
+				household_name: '',
+				telephone: '',
+				address: '',
+				gender: '',
+				birthday: '',
+				create_user: this.currentUser
+			},
+			// 修改成员信息对象
+			editform: {},
+			// 出生日期日期规定：不允许选择当前日期之后的日期
+			pickerOptions0: {
+				disabledDate(time) {
+					return time.getTime() > Date.now() - 8.64e6; // 如果没有后面的-8.64e6就是不可以选择今天的
+				}
+			},
+			// 查询参数
+			queryInfo: {
+				query: '',
+				// 页数
+				pagenum: 1,
+				// 每页显示几条
+				pagesize: 10
+            },
+            // 业主列表
+            houseHoldList: [],
+			// 成员列表
+			MemberList: [],
+			// 总数
+            total: 0,
+            // 加载变量
+            loading: false,
+            // 表单校验规则
+			rules: {
+				household_name: [
+					{ required: true, message: '请输入姓名', trigger: 'blur' },
+					{
+						min: 2,
+						max: 6,
+						message: '长度在 2 到 6 个字符',
+						trigger: 'blur'
+					}
+				],
+				gender: [
+					{ required: true, message: '请选择性别', trigger: 'blur' }
+				],
+				telephone: [
+					{ required: true, message: '请输入电话号码' },
+					{ validator: this.checkTelephone, trigger: 'blur' }
+				],
+				address: [
+					{ required: true, message: '请输入地址', trigger: 'blur' }
+				],
+				birthday: [
+					{
+						required: true,
+						message: '请选择出生日期',
+						trigger: 'blur'
+					}
+				]
+			}
+		};
+	},
+	methods: {
+		// 打开对话框
+		openSelectDialog() {
+			this.dialogVisible = true;
+			this.getHouseHoldList();
+		},
+		// 获取业主列表
+		async getHouseHoldList() {
+			const { data: res } = await this.$http.get('getHouseHoldsIsFList', {
+				params: {
+					query: this.queryInfo.query,
+					pageNum: this.queryInfo.pagenum,
+					pageSize: this.queryInfo.pagesize
+				}
+			});
+			this.houseHoldList = res.data.list;
+			this.total = res.data.total;
+			console.log(res);
+		},
+		// 监听页码值
+		handleCurrentChange(newPage) {
+			this.queryInfo.pagenum = newPage;
+			this.getHouseHoldList();
+		},
+		// 选择具体业主
+		async chooseHouseHold(id) {
+			const { data: res } = await this.$http.get(
+				'getHouseHoldById/' + id
+			);
+			if (res.code === 200) {
+				this.CurrentHouseHold = res.data;
+				this.dialogVisible = false;
+				this.is_select = true;
+				this.getMemberByHouseHoldId(id);
+			} else {
+				return this.$message.error('获取用户信息失败！');
+			}
+		},
+		// 查询
+		search() {
+			this.getHouseHoldList();
+		},
+		// 打开添加成员dialog
+		openAddDialog() {
+			this.addDialogFormVisible = true;
+		},
+		// 根据业主id获取成员列表
+		async getMemberByHouseHoldId(id) {
+			const { data: res } = await this.$http.get(
+				'getMembersByHouseHoldId/' + id
+			);
+			if (res.code === 200) {
+				this.MemberList = res.data;
+			}
+		},
+		// 给业主添加成员
+		async addMember(id) {
+			const { data: res } = await this.$http.post(
+				'addMemberByHouseHoldId/' + id,
+				this.addForm
+			);
+			if (res.code === 200) {
+				this.$message.success(res.msg);
+				this.closeDialog('addForm', 'addDialogFormVisible');
+				this.getMemberByHouseHoldId(id);
+			}
+		},
+		// 校验表单，通过就执行addMember,未通过就返回失败
+		submitForm(formName, id) {
+			this.$refs[formName].validate(valid => {
+				if (valid) {
+					this.addMember(id);
+				} else {
+					return false;
+				}
+			});
+		},
+		// 打开修改对话框
+		showEditDialog(id) {
+			console.log(id);
+			this.editDialogVisible = true;
+			this.selectByHouseHoldId(id);
+		},
+		// 提交修改验证表单
+		submitEditForm() {
+			this.$refs.editform.validate(valid => {
+				if (valid) {
+					this.editHouseHold();
+				} else {
+					return false;
+				}
+			});
+		},
+		// 编辑用户提交
+		async editHouseHold() {
+			const { data: res } = await this.$http.put(
+				'editHouseHold/' + this.editform.household_id,
+				this.editform
+			);
+			console.log(res);
+			if (res.code === 200) {
+				this.$message.success('修改成功');
+				this.editDialogVisible = false;
+				this.getMemberByHouseHoldId(this.CurrentHouseHold.household_id);
+			}
+		},
+		// 删除业主
+		deleteById(id) {
+			this.$confirm('此操作将永久删除该成员, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			})
+				.then(() => {
+					this.delete(id);
+				})
+				.catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
+		},
+		async delete(id) {
+			const { data: res } = await this.$http.delete(
+				'deleteHouseHold/' + id
+			);
+			if (res.code === 200) {
+				this.getMemberByHouseHoldId(this.CurrentHouseHold.household_id);
+				return this.$message.success(res.msg);
+			}
+			return this.$message.error(res.msg);
+		},
+		to() {
+			this.towelcome();
+		}
+	}
 };
 </script>
 
 <style>
 .clearfix h3 {
-  margin-left: 47.5%;
+	margin-left: 47.5%;
 }
 .clearfix {
-  height: 25px;
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+	height: 25px;
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
 }
 .selectButton {
-  background-color: #1ab394 !important;
-  border: none;
+    background-color: #1ab394 !important;
+    margin-right: 5px;
+	border: none;
 }
 .deleteButton {
-  background-color: #f56c6c !important;
-  border: none;
+	background-color: #f56c6c !important;
+	border: none;
 }
 .household-message span {
-  text-align: left;
+	text-align: left;
 }
 .member-container {
-  margin-top: 20px;
+	margin-top: 20px;
 }
 .search-input {
-  width: 300px;
-  float: right;
+	width: 300px;
+	float: right;
 }
 .add-input {
-  width: 200px !important;
-  float: left;
+	width: 200px !important;
+	float: left;
+}
+.edit-button {
+    color: inherit;
+    margin-left: 5px;
+    border: 1px solid #e7eaec;
+    background: White;
 }
 </style>

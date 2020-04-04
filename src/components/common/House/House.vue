@@ -49,7 +49,7 @@
             <el-input class="search-input" v-model="addForm.house_name" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="remark" :label-width="formLabelWidth">
-            <el-input class="search-input" v-model="addForm.remark" autocomplete="off"></el-input>
+            <el-input class="search-input" v-model="addForm.remark" autocomplete="off" type="textarea"></el-input>
           </el-form-item>
           <el-form-item label="创建员工" prop="create_user" :label-width="formLabelWidth">
             <el-input
@@ -73,22 +73,20 @@
       <el-table
         v-loading="loading"
         element-loading-text="拼命加载中"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(0, 0, 0, 0.8)"
         :data="HouseList"
-        header-row-style="font-size:13px;color:black;"
-        cell-style="padding:5px;;"
-        row-style="padding:0;"
+       :header-row-style="{'font-size':'13px','color':'black'}"
+        :cell-style="{'padding':'5px'}"
+        :row-style="{'padding':'0'}"
       >
-        <!-- <el-table-column align="center" type="index" prop="index" label="#" width="200"></el-table-column> -->
+        <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
         <!-- <el-table-column prop="user_id" align="center" label="#" width="50"></el-table-column> -->
-        <el-table-column prop="house_id" align="center" label="编号" width="200"></el-table-column>
-        <el-table-column prop="house_name" align="center" label="楼栋名称" width="310"></el-table-column>
+        <!-- <el-table-column prop="house_id" align="center" label="编号" width="200"></el-table-column> -->
+        <el-table-column prop="house_name" align="center" label="楼栋名称" width="300"></el-table-column>
         <el-table-column prop="remark" align="center" label="备注" width="300"></el-table-column>
         <el-table-column prop="create_date" align="center" label="创建时间" width="300"></el-table-column>
         <el-table-column prop="create_user" align="center" label="创建员工" width="200"></el-table-column>
 
-        <el-table-column align="center" label="操作" width="300">
+        <el-table-column align="center" label="操作" width="430">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -132,7 +130,7 @@
             <el-button
               size="mini"
               class="house-button"
-              @click="deleteById(scope.row.house_id)"
+              @click="addUnit(scope.row.house_id,scope.row.house_name)"
             >添加单元</el-button>
           </template>
         </el-table-column>
@@ -154,6 +152,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
 	data() {
 		return {
 			queryInfo: {
@@ -190,7 +189,9 @@ export default {
 				remark: [
 					{ required: true, message: '请输入备注', trigger: 'blur' }
 				]
-			}
+            },
+            // 表格加载
+            loading: true,
 		};
 	},
 	created() {
@@ -208,7 +209,8 @@ export default {
             });
             console.log(res);
 			this.HouseList = res.data.list;
-			this.total = res.data.total;
+            this.total = res.data.total;
+            this.loading = false;
 		},
 		// 添加楼栋
 		async addHouse() {
@@ -299,7 +301,12 @@ export default {
         // 查询
         search() {
 			this.getHouseList();
-		},
+        },
+        // 去添加单元页
+        addUnit(id, name) {
+            this.$router.push({ path: 'unit', query: { HouseId: id, HouseName: name } });
+            this.reload();
+        }
 	}
 };
 </script>
@@ -330,7 +337,9 @@ export default {
 	width: 200px;
 }
 .house-button {
+    color: inherit;
     margin-left: 5px;
+    border: 1px solid #e7eaec;
     background: White;
 }
 </style>

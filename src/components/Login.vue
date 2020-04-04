@@ -70,11 +70,12 @@ export default {
 <style lang="less" scoped>
 .login_wrapper {
   height: 100%;
-  background-color: skyblue;
+  background-color: #F3F3F4;
 }
 .login_box {
   height: 310px;
   width: 350px;
+  border-radius: 5%;
   background-color: aliceblue;
   position: absolute;
   top: 50%;

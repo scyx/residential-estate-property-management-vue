@@ -62,7 +62,7 @@
         <div slot="header" class="card">
           <h2>公告</h2>
         </div>
-        <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse @change="handleChange">
           <el-collapse-item title="一致性 Consistency" name="1">
             <span>
               与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；

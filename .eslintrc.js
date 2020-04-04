@@ -31,6 +31,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 0,
     "no-tabs":"off",
     'indent' : 'off',
+    'no-plusplus': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

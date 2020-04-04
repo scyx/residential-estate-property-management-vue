@@ -30,7 +30,7 @@
             background-color="#333744"
             active-text-color="#409EFF"
             text-color="white"
-            unique-opened="true"
+            unique-opened
             :collapse="iscollapse"
             :collapse-transition="false"
             :default-active="activepath"

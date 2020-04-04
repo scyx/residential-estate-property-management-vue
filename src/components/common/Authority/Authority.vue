@@ -70,14 +70,15 @@
             class="selectButton"
             size="medium"
             icon="el-icon-plus"
-            @click="test"
           >添加权限</el-button>
         </div>
         <el-divider></el-divider>
         <el-table
           :data="tableData"
           style="width: 100%"
-          header-row-style="font-size:13px;color:black;"
+          :header-row-style="{'font-size':'13px','color':'black'}"
+          :cell-style="{'padding':'5px'}"
+          :row-style="{'padding':'0'}"
         >
           <el-table-column prop="date" label="#" width="180" align="center"></el-table-column>
           <el-table-column prop="date" label="权限名称" width="180" align="center"></el-table-column>
@@ -94,14 +95,18 @@
 export default {
 	data() {
 		return {
-			authority_group_list: [],
+            // 权限组列表
+            authority_group_list: [],
+            // 权限组表单可见变量
 			addFormVisible: false,
-			formLabelWidth: '100px',
+            formLabelWidth: '100px',
+            // 添加权限组表单
 			addForm: {
 				name: '',
 				description: ''
 			},
-			title: '物业管理员权限组',
+            title: '物业管理员权限组',
+            tableData: [],
 			rules: {
 				name: [
 					{

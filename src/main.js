@@ -1,4 +1,6 @@
-import ElementUI, { Message } from 'element-ui';
+import ElementUI, {
+    Message
+} from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Vue from 'vue';
 import axios from 'axios';
@@ -11,11 +13,11 @@ import './assets/css/global.css';
 
 // 手机号验证规则
 var checkTelephone = (rule, value, callback) => {
-  const regTelephone = /^1[3-9]\d{9}$/;
-  if (regTelephone.test(value)) {
-    callback();
-  }
-  callback(new Error('请输入合法的手机号'));
+    const regTelephone = /^1[3-9]\d{9}$/;
+    if (regTelephone.test(value)) {
+        callback();
+    }
+    callback(new Error('请输入合法的手机号'));
 };
 // 请求路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/';
@@ -27,12 +29,12 @@ Vue.prototype.$http = axios;
 Vue.prototype.$confirm = Message.$confirm;
 // 清空表单的全局方法
 Vue.prototype.clearForm = function (formName) {
-  this.$refs[formName].resetFields();
+    this.$refs[formName].resetFields();
 };
 // 关闭对话框的方法 两个变量为对话框中的表单名称控制对话框可见的变量
 Vue.prototype.closeDialog = function (formName, visible) {
-  this[visible] = false;
-  this.clearForm(formName);
+    this[visible] = false;
+    this.clearForm(formName);
 };
 // 校验电话号的规则
 Vue.prototype.checkTelephone = checkTelephone;
@@ -40,31 +42,54 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.currentUser = window.sessionStorage.getItem('username');
 // 通过id查询业主信息
-Vue.prototype.selectByHouseHoldId = async function(id) {
-  const { data: res } = await this.$http.get('getHouseHoldById/' + id);
-      if (res.code === 200) {
+Vue.prototype.selectByHouseHoldId = async function (id) {
+    const {
+        data: res
+    } = await this.$http.get('getHouseHoldById/' + id);
+    if (res.code === 200) {
         this.editform = res.data;
-        console.log(this.editform);
-      } else {
+    } else {
         return this.$message.error('获取住户信息失败！该住户可能不存在');
-      }
+    }
 };
 // 通过id查询楼栋信息
-Vue.prototype.selectByHouseId = async function(id) {
-    const { data: res } = await this.$http.get('getHouseById/' + id);
-        if (res.code === 200) {
-          this.editform = res.data;
-          console.log(this.editform);
-        } else {
-          return this.$message.error('获取楼栋信息失败！楼栋可能不存在');
-        }
-  };
-// 菜单栏激活
-Vue.prototype.savepath = function(activepath) {
-  window.sessionStorage.setItem('activepath', activepath);
-  this.activepath = activepath;
+Vue.prototype.selectByHouseId = async function (id) {
+    const {
+        data: res
+    } = await this.$http.get('getHouseById/' + id);
+    if (res.code === 200) {
+        this.editform = res.data;
+    } else {
+        return this.$message.error('获取楼栋信息失败！楼栋可能不存在');
+    }
 };
-Vue.prototype.towelcome = function() {
+// 获取楼栋列表
+Vue.prototype.getHouseList = async function () {
+    const {
+        data: res
+    } = await this.$http.get('getHouseList', {
+        params: {
+            query: this.queryInfo.query,
+            pageNum: this.queryInfo.pagenum,
+            pageSize: this.queryInfo.pagesize
+        }
+    });
+    this.HouseList = res.data.list;
+    this.total = res.data.total;
+};
+// 获取单元列表
+Vue.prototype.getUnitList = async function () {
+    const { data: res } = await this.$http.get(
+        'getUnitList/' + this.currentHouseId
+    );
+    this.UnitList = res.data;
+};
+// 菜单栏激活
+Vue.prototype.savepath = function (activepath) {
+    window.sessionStorage.setItem('activepath', activepath);
+    this.activepath = activepath;
+};
+Vue.prototype.towelcome = function () {
     this.$router.push('/welcome');
     this.savepath('/welcome');
     window.location.reload();
@@ -72,7 +97,7 @@ Vue.prototype.towelcome = function() {
 
 
 new Vue({
-  router,
-  store,
-  render: h => h(App),
+    router,
+    store,
+    render: h => h(App),
 }).$mount('#app');

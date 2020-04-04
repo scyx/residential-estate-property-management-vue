@@ -10,6 +10,9 @@ import User from '../components/common/User.vue';
 import HouseholdOwnMember from '../components/common/household/HouseholdOwnMember.vue';
 import Notice from '../components/common/Notice.vue';
 import House from '../components/common/House/House.vue';
+import Unit from '../components/common/House/Unit.vue';
+import Room from '../components/common/House/Room.vue';
+import addRoom from '../components/common/House/addRoom.vue';
 
 Vue.use(VueRouter);
 
@@ -81,8 +84,29 @@ const routes = [
         component: House,
         meta: {
           title: '楼栋管理'
+        },
+      },
+      {
+        path: '/unit',
+        component: Unit,
+        meta: {
+          title: '单元信息'
         }
       },
+      {
+        path: '/room',
+        component: Room,
+        meta: {
+          title: '房屋管理'
+        }
+      },
+      {
+        path: '/addRoom',
+        component: addRoom,
+        meta: {
+          title: '添加房屋'
+        }
+    },
     ],
   },
   // {
