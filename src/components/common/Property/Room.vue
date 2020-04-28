@@ -1,4 +1,5 @@
 <template>
+  <!-- 房屋管理页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -49,7 +50,7 @@
           <el-dialog
             title="选择楼栋"
             :visible.sync="selectDialogVisible"
-            width="50%"
+            width="70%"
             @close="selectDialogVisible=false"
           >
             <el-divider></el-divider>
@@ -65,12 +66,12 @@
               :cell-style="{'padding':'5px'}"
               :row-style="{'padding':'0'}"
             >
-              <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
-              <el-table-column prop="house_name" align="center" label="楼栋名称" width="200"></el-table-column>
-              <el-table-column prop="remark" align="center" label="备注" width="200"></el-table-column>
-              <el-table-column prop="create_date" align="center" label="创建时间" width="200"></el-table-column>
-              <el-table-column prop="create_user" align="center" label="创建员工" width="100"></el-table-column>
-              <el-table-column align="center" label="操作">
+              <el-table-column align="center" type="index" prop="index" label="#" min-width="100"></el-table-column>
+              <el-table-column prop="house_name" align="center" label="楼栋名称" min-width="150"></el-table-column>
+              <el-table-column prop="remark" align="center" label="备注" min-width="200"></el-table-column>
+              <el-table-column prop="create_date" align="center" label="创建时间" min-width="180"></el-table-column>
+              <el-table-column prop="create_user" align="center" label="创建员工" min-width="100"></el-table-column>
+              <el-table-column align="center" label="操作" min-width="150">
                 <template slot-scope="scope">
                   <el-button
                     type="primary"
@@ -118,21 +119,21 @@
         :cell-style="{'padding':'5px'}"
         :row-style="{'padding':'0'}"
       >
-        <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
-        <el-table-column prop="house_id" align="center" label="楼栋编号" width="200"></el-table-column>
-        <el-table-column prop="unit_id" align="center" label="单元" width="200"></el-table-column>
-        <el-table-column prop="room_id" align="center" label="房屋编号" width="200"></el-table-column>
-        <el-table-column prop="floor_num" align="center" label="楼层" width="200"></el-table-column>
-        <el-table-column prop="area" align="center" label="建筑面积" width="200"></el-table-column>
-        <el-table-column prop="status" align="center" label="房屋状态" width="200"></el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" type="index" prop="index" label="#" min-width="100"></el-table-column>
+        <el-table-column prop="house_id" align="center" label="楼栋编号" min-width="150"></el-table-column>
+        <el-table-column prop="unit_id" align="center" label="单元" min-width="120"></el-table-column>
+        <el-table-column prop="room_id" align="center" label="房屋编号" min-width="160"></el-table-column>
+        <el-table-column prop="floor_num" align="center" label="楼层" min-width="150"></el-table-column>
+        <el-table-column prop="area" align="center" label="建筑面积" min-width="150"></el-table-column>
+        <el-table-column prop="status" align="center" label="房屋状态" min-width="150"></el-table-column>
+        <el-table-column align="center" label="操作" min-width="200">
           <template slot-scope="scope">
             <el-button size="mini" class="edit-button" @click="showEditDialog(scope.row.id)">修改</el-button>
             <!-- 修改对话框 -->
             <el-dialog
               title="修改信息"
               :visible.sync="editDialogVisible"
-              width="20%"
+              :width="dialog_width"
               @close="closeDialog('editform','editDialogVisible')"
             >
               <el-form :model="editform" size="small" ref="editform" :rules="rules">
@@ -185,6 +186,7 @@
 export default {
 	data() {
 		return {
+            dialog_width: '350px',
 			// 楼栋列表
 			HouseList: [],
 			// 房屋列表
@@ -309,7 +311,7 @@ export default {
 		// 删除房屋
 		deleteById(id) {
 			this.$confirm(
-				'此操作将永久删除该房屋，此操作不可恢复，是否继续?',
+				'此操作将永久删除该房屋，不可恢复，是否继续?',
 				'提示',
 				{
 					confirmButtonText: '确定',

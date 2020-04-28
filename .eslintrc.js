@@ -32,6 +32,7 @@ module.exports = {
     "no-tabs":"off",
     'indent' : 'off',
     'no-plusplus': 'off',
+    'operator-linebreak': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

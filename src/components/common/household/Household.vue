@@ -1,4 +1,5 @@
 <template>
+<!-- 住户管理页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -27,9 +28,9 @@
         <el-col :span="1">
           <el-button type="primary" @click="dialogFormVisible = true">添加住户</el-button>
           <el-dialog
-            title="添加业主"
+            title="添加住户"
             :visible.sync="dialogFormVisible"
-            width="20%"
+            :width="dialog_width"
             @close="closeDialog('addForm','dialogFormVisible')"
           >
             <el-form :model="form" size="small" ref="addForm" :rules="rules">
@@ -107,7 +108,7 @@
         <el-table-column prop="address" align="center" label="地址"></el-table-column>
         <el-table-column prop="create_user" align="center" label="创建人"></el-table-column>
         <!-- 操作区 -->
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" label="操作" min-width="250">
           <template slot-scope="scope">
             <el-tooltip effect="light" content="编辑" placement="top" :enterable="false">
               <el-button
@@ -120,7 +121,7 @@
             <el-dialog
               title="编辑用户"
               :visible.sync="editDialogVisible"
-              width="20%"
+              :width="dialog_width"
               @close="closeDialog('editform','editDialogVisible')"
             >
               <el-form :model="editform" size="small" ref="editform" :rules="rules">
@@ -197,7 +198,7 @@
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
-        style="float:left;margin:20px;"
+        style="float:right;margin:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="queryInfo.pagenum"
@@ -235,7 +236,7 @@ export default {
 				gender: '',
 				birthday: '',
 				is_f: '',
-				create_user: this.currentUser
+				create_user: window.sessionStorage.getItem('username')
 			},
 			editform: {},
 			editform_copy: {},
@@ -244,7 +245,8 @@ export default {
 				disabledDate(time) {
 					return time.getTime() > Date.now() - 8.64e6; // 如果没有后面的-8.64e6就是不可以选择今天的
 				}
-			},
+            },
+            dialog_width: '350px',
 			// 添加表单的规则
 			rules: {
 				household_name: [
@@ -382,7 +384,7 @@ export default {
 		},
 		// 删除业主
 		deleteById(id) {
-			this.$confirm('此操作将永久删除该业主，此操作不可恢复， 是否继续?', '提示', {
+			this.$confirm('此操作将永久删除该住户，不可恢复， 是否继续?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning'

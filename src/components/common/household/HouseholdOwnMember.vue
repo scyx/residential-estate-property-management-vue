@@ -1,4 +1,5 @@
 <template>
+<!-- 业主管理页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -33,10 +34,10 @@
         <el-dialog
           title="选择业主"
           :visible.sync="dialogVisible"
-          width="50%"
+          width="60%"
           @close="dialogVisible=false"
         >
-          <el-divider></el-divider>
+        <el-divider></el-divider>
           <el-input placeholder="请输入内容" v-model="queryInfo.query" class="search-input">
             <el-button slot="append" @click="search">查询</el-button>
           </el-input>
@@ -55,8 +56,8 @@
             <el-table-column prop="household_name" align="center" label="姓名" width="100"></el-table-column>
             <el-table-column prop="gender" align="center" label="性别" width="80"></el-table-column>
             <el-table-column prop="age" align="center" label="年龄" width="50"></el-table-column>
-            <el-table-column prop="telephone" align="center" label="电话" width="200"></el-table-column>
-            <el-table-column prop="address" align="center" label="地址"></el-table-column>
+            <el-table-column prop="telephone" align="center" label="电话" width="150"></el-table-column>
+            <el-table-column prop="address" align="center" label="地址" min-width="200"></el-table-column>
             <el-table-column align="center" label="操作">
               <template slot-scope="scope">
                 <el-button
@@ -188,7 +189,7 @@
             <el-dialog
               title="编辑用户"
               :visible.sync="editDialogVisible"
-              width="20%"
+              :width="dialog_width"
               @close="closeDialog('editform','editDialogVisible')"
             >
               <el-form :model="editform" size="small" ref="editform" :rules="rules">
@@ -244,6 +245,7 @@
 export default {
 	data() {
 		return {
+            dialog_width: '350px',
 			// 选择业主的对话框
 			dialogVisible: false,
 			// 添加成员的对话框
@@ -272,7 +274,7 @@ export default {
 				address: '',
 				gender: '',
 				birthday: '',
-				create_user: this.currentUser
+				create_user: window.sessionStorage.getItem('username')
 			},
 			// 修改成员信息对象
 			editform: {},
@@ -481,7 +483,7 @@ export default {
 }
 .selectButton {
     background-color: #1ab394 !important;
-    margin-right: 5px;
+    margin: auto 10px;
 	border: none;
 }
 .deleteButton {

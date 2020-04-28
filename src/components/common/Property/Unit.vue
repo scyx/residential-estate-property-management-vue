@@ -1,4 +1,5 @@
 <template>
+  <!-- 单元管理页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -41,7 +42,7 @@
       <el-dialog
         title="添加单元"
         :visible.sync="addUnitDialogVisible"
-        width="20%"
+        :width="dialog_width"
         @close="closeDialog('addForm','editDialogVisible')"
       >
         <el-form :model="addForm" size="small" ref="addForm" :rules="rules">
@@ -56,7 +57,7 @@
             ></el-input-number>
           </el-form-item>
           <el-form-item label="总层数" prop="level" :label-width="formLabelWidth">
-            <el-input class="add-input" v-model="addForm.level" autocomplete="off"></el-input>
+            <el-input class="add-input" v-model="addForm.level"></el-input>
           </el-form-item>
           <el-form-item label="是否有电梯" prop="has_lift" :label-width="formLabelWidth">
             <el-select v-model="addForm.has_lift" placeholder="请选择" style="width:120px;float:left;">
@@ -77,54 +78,6 @@
           <el-button type="primary" @click="submitAddForm('addForm')">提 交</el-button>
         </div>
       </el-dialog>
-      <!-- 选择楼栋对话框 -->
-      <el-dialog
-        title="选择楼栋"
-        :visible.sync="selectDialogVisible"
-        width="50%"
-        @close="selectDialogVisible=false"
-        center
-      >
-        <el-divider></el-divider>
-        <el-input placeholder="请输入内容" v-model="queryInfo.query" class="search-input">
-          <el-button slot="append" @click="getHouseList">查询</el-button>
-        </el-input>
-        <el-table
-          v-loading="loading"
-          element-loading-text="拼命加载中"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="rgba(0, 0, 0, 0.8)"
-          :data="HouseList"
-          :header-row-style="{'font-size':'13px','color':'black'}"
-          :cell-style="{'padding':'5px'}"
-          :row-style="{'padding':'0'}"
-        >
-          <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
-          <el-table-column prop="house_name" align="center" label="楼栋名称" width="200"></el-table-column>
-          <el-table-column prop="remark" align="center" label="备注" width="200"></el-table-column>
-          <el-table-column prop="create_date" align="center" label="创建时间" width="200"></el-table-column>
-          <el-table-column prop="create_user" align="center" label="创建员工" width="100"></el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="mini"
-                class="selectButton"
-                @click="chooseHouse(scope.row.house_id,scope.row.house_name)"
-              >选择</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination
-          small
-          layout="total,prev, pager, next"
-          :total="total"
-          @current-change="handleCurrentChange"
-          :current-page.sync="queryInfo.pagenum"
-          :page-size="10"
-        ></el-pagination>
-        <span slot="footer" class="dialog-footer"></span>
-      </el-dialog>
       <el-divider></el-divider>
       <!-- 单元信息区域 -->
       <el-table
@@ -137,16 +90,16 @@
         :cell-style="{'padding':'5px'}"
         :row-style="{'padding':'0'}"
       >
-        <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
+        <el-table-column align="center" type="index" prop="index" label="#" min-width="80"></el-table-column>
         <!-- <el-table-column prop="user_id" align="center" label="#" width="50"></el-table-column> -->
         <!-- <el-table-column prop="house_id" align="center" label="编号" width="200"></el-table-column> -->
-        <el-table-column prop="unit_id" align="center" label="单元编号" width="200"></el-table-column>
-        <el-table-column prop="level" align="center" label="总层数" width="200"></el-table-column>
-        <el-table-column prop="has_lift" align="center" label="是否有电梯" width="150"></el-table-column>
-        <el-table-column prop="remark" align="center" label="备注" width="350"></el-table-column>
-        <el-table-column prop="create_user" align="center" label="创建员工" width="200"></el-table-column>
+        <el-table-column prop="unit_id" align="center" label="单元编号" min-width="150"></el-table-column>
+        <el-table-column prop="level" align="center" label="总层数" min-width="200"></el-table-column>
+        <el-table-column prop="has_lift" align="center" label="是否有电梯" min-width="100"></el-table-column>
+        <el-table-column prop="remark" align="center" label="备注" min-width="350"></el-table-column>
+        <el-table-column prop="create_user" align="center" label="创建员工" min-width="150"></el-table-column>
 
-        <el-table-column align="center" label="操作" width="430">
+        <el-table-column align="center" label="操作" min-width="200">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -157,7 +110,7 @@
             <el-dialog
               title="修改信息"
               :visible.sync="editDialogVisible"
-              width="20%"
+              :width="dialog_width"
               @close="closeDialog('editForm','editDialogVisible')"
             >
               <el-form :model="editForm" size="small" ref="editForm" :rules="rules">
@@ -212,6 +165,53 @@
         </el-table-column>
       </el-table>
     </el-card>
+          <!-- 选择楼栋对话框 -->
+      <el-dialog
+        title="选择楼栋"
+        :visible.sync="selectDialogVisible"
+        width="70%"
+        @close="selectDialogVisible=false"
+      >
+        <el-divider></el-divider>
+        <el-input placeholder="请输入内容" v-model="queryInfo.query" class="search-input">
+          <el-button slot="append" @click="getHouseList">查询</el-button>
+        </el-input>
+        <el-table
+          v-loading="loading"
+          element-loading-text="拼命加载中"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
+          :data="HouseList"
+          :header-row-style="{'font-size':'13px','color':'black'}"
+          :cell-style="{'padding':'5px'}"
+          :row-style="{'padding':'0'}"
+        >
+          <el-table-column align="center" type="index" prop="index" label="#" min-width="100"></el-table-column>
+          <el-table-column prop="house_name" align="center" label="楼栋名称" min-width="150"></el-table-column>
+          <el-table-column prop="remark" align="center" label="备注" min-width="200"></el-table-column>
+          <el-table-column prop="create_date" align="center" label="创建时间" min-width="180"></el-table-column>
+          <el-table-column prop="create_user" align="center" label="创建员工" min-width="100"></el-table-column>
+          <el-table-column align="center" label="操作" min-width="150">
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                size="mini"
+                class="selectButton"
+                @click="chooseHouse(scope.row.house_id,scope.row.house_name)"
+              >选择</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+            class="pagination"
+          small
+          layout="total,prev, pager, next"
+          :total="total"
+          @current-change="handleCurrentChange"
+          :current-page.sync="queryInfo.pagenum"
+          :page-size="10"
+        ></el-pagination>
+      </el-dialog>
   </div>
 </template>
 
@@ -219,6 +219,7 @@
 export default {
 	data() {
 		return {
+			dialog_width: '350px',
 			// 单元列表
 			UnitList: [],
 			// 楼栋列表
@@ -247,7 +248,7 @@ export default {
 			editForm: {},
 			// 添加单元的表单对象
 			addForm: {
-				create_user: this.currentUser
+				create_user: window.sessionStorage.getItem('username')
 			},
 			// 控制加载的变量
 			loading: false,
@@ -256,7 +257,7 @@ export default {
 			formLabelWidth: '100px',
 			rules: {
 				unit_id: [
-					{ required: true, message: '请输入编号', trigger: 'blur' }
+					{ required: true, message: '请输入编号', trigger: 'change' }
 				],
 				level: [
 					{ required: true, message: '请输入总层数', trigger: 'blur' }
@@ -277,7 +278,8 @@ export default {
 	},
 	methods: {
 		openSelectDialog() {
-			this.selectDialogVisible = true;
+            this.selectDialogVisible = true;
+            this.queryInfo.query = '';
 			this.getHouseList();
 		},
 		// 获取楼栋列表
@@ -292,14 +294,6 @@ export default {
 			console.log(res);
 			this.HouseList = res.data.list;
 			this.total = res.data.total;
-		},
-		// 获取当前楼栋的单元列表
-		async getUnitList() {
-			const { data: res } = await this.$http.get(
-				'getUnitList/' + this.currentHouseId
-			);
-			console.log(res);
-			this.UnitList = res.data;
 		},
 		// 选择楼栋
 		chooseHouse(id, name) {
@@ -411,18 +405,18 @@ export default {
 }
 .main {
 	width: 100%;
-    height: 34px;
-    justify-content: space-between;
-    align-items: center;
-    display: flex;
+	height: 34px;
+	justify-content: space-between;
+	align-items: center;
+	display: flex;
 }
 .main h3 {
-    margin-left: 47.5%;
+	margin-left: 47.5%;
 }
 .select-area-head {
-    text-align: right;
-    height: fit-content;
-    width: fit-content;
+	text-align: right;
+	height: fit-content;
+	width: fit-content;
 }
 .general-edit-button {
 	color: inherit;

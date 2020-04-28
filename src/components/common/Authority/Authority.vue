@@ -1,4 +1,5 @@
 <template>
+<!-- 权限组页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -14,14 +15,15 @@
         <div class="list">
           <el-button type="primary" round class="addButton" @click="openAddForm">添加权限组</el-button>
           <!-- 添加权限组对话框 -->
-          <el-dialog title="添加权限组" :visible.sync="addFormVisible" width="20%">
+          <el-dialog title="添加权限组" :visible.sync="addFormVisible" :width="dialog_width">
             <el-divider></el-divider>
             <el-form :model="addForm" ref="addForm" size="medium" :rules="rules">
               <el-form-item label="权限组名称" :label-width="formLabelWidth" prop="name">
-                <el-input v-model="addForm.name" autocomplete="off" placeholder="必填，请填写权限组名称"></el-input>
+                <el-input class="add-input" v-model="addForm.name" autocomplete="off" placeholder="必填，请填写权限组名称"></el-input>
               </el-form-item>
               <el-form-item label="权限组描述" :label-width="formLabelWidth" prop="description">
                 <el-input
+                class="add-input"
                   v-model="addForm.description"
                   autocomplete="off"
                   placeholder="必填，请填写权限组描述"
@@ -95,6 +97,7 @@
 export default {
 	data() {
 		return {
+            dialog_width: '350px',
             // 权限组列表
             authority_group_list: [],
             // 权限组表单可见变量
@@ -232,7 +235,8 @@ h5 {
 	font-weight: 600;
 }
 .addButton {
-	width: 400px;
+    min-width: 300px;
+    box-sizing: border-box;
 	background-color: #1ab394;
 	border: 0ch;
 }

@@ -27,6 +27,7 @@ axios.defaults.withCredentials = true;
 Vue.prototype.QS = QS;
 Vue.prototype.$http = axios;
 Vue.prototype.$confirm = Message.$confirm;
+Vue.prototype.dialog_width = '350px';
 // 清空表单的全局方法
 Vue.prototype.clearForm = function (formName) {
     this.$refs[formName].resetFields();
@@ -74,15 +75,28 @@ Vue.prototype.getHouseList = async function () {
             pageSize: this.queryInfo.pagesize
         }
     });
-    this.HouseList = res.data.list;
-    this.total = res.data.total;
+    if (res.code === 200) {
+        this.HouseList = res.data.list;
+        this.total = res.data.total;
+    }
 };
 // 获取单元列表
 Vue.prototype.getUnitList = async function () {
-    const { data: res } = await this.$http.get(
-        'getUnitList/' + this.currentHouseId
+    const {
+        data: res
+    } = await this.$http.get(
+        'getUnitList', {
+            params: {
+                query: this.queryInfo.query,
+                house_id: this.currentHouseId,
+                pageNum: this.queryInfo.pagenum,
+                pageSize: this.queryInfo.pagesize,
+            }
+        }
     );
-    this.UnitList = res.data;
+    this.UnitList = res.data.list;
+    console.log(res);
+    this.total = res.data.total;
 };
 // 菜单栏激活
 Vue.prototype.savepath = function (activepath) {
@@ -94,7 +108,20 @@ Vue.prototype.towelcome = function () {
     this.savepath('/welcome');
     window.location.reload();
 };
-
+// 根据id 获取公告详情
+Vue.prototype.getNoticeById = async function (id) {
+    const {
+        data: res
+    } = await this.$http.get('getNoticeById/' + id);
+    if (res.code === 200) {
+        this.currentNotice = res.data;
+        console.log(this.currentNotice);
+    } else {
+        return this.$message.error(
+            '获取住户信息失败！该房屋可能不存在'
+        );
+    }
+};
 
 new Vue({
     router,

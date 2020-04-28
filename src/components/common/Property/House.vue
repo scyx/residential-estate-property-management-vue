@@ -1,4 +1,5 @@
 <template>
+<!-- 楼栋管理页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -38,7 +39,7 @@
       <el-dialog
         title="添加楼栋"
         :visible.sync="addDialogFormVisible"
-        width="20%"
+        :width="dialog_width"
         @close="closeDialog('addForm','addDialogFormVisible')"
       >
         <el-form :model="addForm" size="small" ref="addForm" :rules="rules">
@@ -78,15 +79,15 @@
         :cell-style="{'padding':'5px'}"
         :row-style="{'padding':'0'}"
       >
-        <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
+        <el-table-column align="center" type="index" prop="index" label="#" width="80"></el-table-column>
         <!-- <el-table-column prop="user_id" align="center" label="#" width="50"></el-table-column> -->
         <!-- <el-table-column prop="house_id" align="center" label="编号" width="200"></el-table-column> -->
-        <el-table-column prop="house_name" align="center" label="楼栋名称" width="300"></el-table-column>
+        <el-table-column prop="house_name" align="center" label="楼栋名称" width="200"></el-table-column>
         <el-table-column prop="remark" align="center" label="备注" width="300"></el-table-column>
-        <el-table-column prop="create_date" align="center" label="创建时间" width="300"></el-table-column>
+        <el-table-column prop="create_date" align="center" label="创建时间" width="180"></el-table-column>
         <el-table-column prop="create_user" align="center" label="创建员工" width="200"></el-table-column>
 
-        <el-table-column align="center" label="操作" width="430">
+        <el-table-column align="center" label="操作" min-width="250">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -168,7 +169,7 @@ export default {
 				house_name: '',
                 remark: '',
                 create_date: '',
-				create_user: this.currentUser
+				create_user: window.sessionStorage.getItem('username')
             },
             // 修改页表单对象
             editform: {},
@@ -192,6 +193,7 @@ export default {
             },
             // 表格加载
             loading: true,
+            dialog_width: '350px',
 		};
 	},
 	created() {
@@ -245,13 +247,13 @@ export default {
         },
         // 打开修改对话框
         showEditDialog(id) {
+            this.selectByHouseId(id);
 			this.editDialogVisible = true;
-			this.selectByHouseId(id);
 			// this.editform_copy = this.editform;
         },
         // 删除业主
 		deleteById(id) {
-			this.$confirm('此操作将永久删除该楼栋，此操作不可恢复，是否继续?', '提示', {
+			this.$confirm('此操作将永久删除该楼栋，不可恢复，是否继续?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning'

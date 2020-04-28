@@ -1,20 +1,23 @@
 <template>
+<!-- 登录页面 -->
   <div class="login_wrapper">
     <!-- 头像区域 -->
     <div class="login_box">
-      <img src="../assets/logo.png" alt class="avatar_box" />
+      <!-- <img src="../assets/logo.png" alt class="avatar_box" /> -->
+      <h1>小区物业管理系统</h1>
+      <h3>请登录</h3>
       <!-- 登录表单区域 -->
       <el-form ref="loginformRef" label-width="0px" :model="formLogin" :rules="loginFormRules" class="login_form">
         <!-- 用户名 -->
         <el-form-item prop="username">
-          <el-input prefix-icon="el-icon-user-solid" v-model="formLogin.username">用户名</el-input>
+          <el-input prefix-icon="el-icon-user-solid" v-model="formLogin.username" placeholder="请输入用户名">用户名</el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input prefix-icon="el-icon-lock" v-model="formLogin.password" type="password">密码</el-input>
+          <el-input prefix-icon="el-icon-lock" v-model="formLogin.password" type="password" placeholder="请输入密码">密码</el-input>
         </el-form-item>
         <!-- 按钮区域 -->
-        <el-button type="primary" @click="login">登录</el-button>
+        <el-button type="primary" class="selectButton" @click="login">登录</el-button>
         <el-button type="info" @click="reset">重置</el-button>
       </el-form>
     </div>
@@ -76,7 +79,7 @@ export default {
   height: 310px;
   width: 350px;
   border-radius: 5%;
-  background-color: aliceblue;
+//   background-color: #FFFFFF;
   position: absolute;
   top: 50%;
   left: 50%;

@@ -1,4 +1,5 @@
 <template>
+  <!-- 添加房屋页 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -50,12 +51,12 @@
         <el-dialog
           title="选择楼栋"
           :visible.sync="selectHouseDialogVisible"
-          width="50%"
+          width="70%"
           @close="selectHouseDialogVisible=false"
         >
           <el-divider></el-divider>
           <el-input placeholder="请输入内容" v-model="queryInfo.query" class="search-input">
-            <el-button slot="append" @click="getHouseList">查询</el-button>
+            <el-button slot="append" @click="searchHouse">查询</el-button>
           </el-input>
           <el-table
             v-loading="loading"
@@ -67,12 +68,12 @@
             :cell-style="{'padding':'5px'}"
             :row-style="{'padding':'0'}"
           >
-            <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
-            <el-table-column prop="house_name" align="center" label="楼栋名称" width="200"></el-table-column>
-            <el-table-column prop="remark" align="center" label="备注" width="200"></el-table-column>
-            <el-table-column prop="create_date" align="center" label="创建时间" width="200"></el-table-column>
-            <el-table-column prop="create_user" align="center" label="创建员工" width="100"></el-table-column>
-            <el-table-column align="center" label="操作">
+            <el-table-column align="center" type="index" prop="index" label="#" min-width="100"></el-table-column>
+            <el-table-column prop="house_name" align="center" label="楼栋名称" min-width="150"></el-table-column>
+            <el-table-column prop="remark" align="center" label="备注" min-width="200"></el-table-column>
+            <el-table-column prop="create_date" align="center" label="创建时间" min-width="180"></el-table-column>
+            <el-table-column prop="create_user" align="center" label="创建员工" min-width="100"></el-table-column>
+            <el-table-column align="center" label="操作" min-width="150">
               <template slot-scope="scope">
                 <el-button
                   type="primary"
@@ -96,14 +97,14 @@
         </el-dialog>
         <!-- 选择单元区域 -->
         <el-dialog
-          title="选择楼栋"
+          title="选择单元"
           :visible.sync="selectUnitDialogVisible"
-          width="50%"
+          width="70%"
           @close="selectUnitDialogVisible=false"
         >
           <el-divider></el-divider>
           <el-input placeholder="请输入内容" v-model="queryInfo.query" class="search-input">
-            <el-button slot="append" @click="getUnitList">查询</el-button>
+            <el-button slot="append" @click="searchUnit">查询</el-button>
           </el-input>
           <el-table
             v-loading="loading"
@@ -115,13 +116,13 @@
             :cell-style="{'padding':'5px'}"
             :row-style="{'padding':'0'}"
           >
-            <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
-            <el-table-column prop="unit_id" align="center" label="单元编号" width="100"></el-table-column>
-            <el-table-column prop="level" align="center" label="总层数" width="100"></el-table-column>
-            <el-table-column prop="has_lift" align="center" label="是否有电梯" width="150"></el-table-column>
-            <el-table-column prop="remark" align="center" label="备注" width="250"></el-table-column>
-            <el-table-column prop="create_user" align="center" label="创建员工" width="100"></el-table-column>
-            <el-table-column align="center" label="操作">
+            <el-table-column align="center" type="index" prop="index" label="#" min-width="100"></el-table-column>
+            <el-table-column prop="unit_id" align="center" label="单元编号" min-width="100"></el-table-column>
+            <el-table-column prop="level" align="center" label="总层数" min-width="100"></el-table-column>
+            <el-table-column prop="has_lift" align="center" label="是否有电梯" min-width="150"></el-table-column>
+            <el-table-column prop="remark" align="center" label="备注" min-width="250"></el-table-column>
+            <el-table-column prop="create_user" align="center" label="创建员工" min-width="100"></el-table-column>
+            <el-table-column align="center" label="操作" min-width="100">
               <template slot-scope="scope">
                 <el-button
                   type="primary"
@@ -285,7 +286,7 @@ export default {
 				// 每页显示几条
 				pagesize: 10
 			},
-			label_width: '600px',
+			label_width: '37.5%',
 			// 楼栋列表
 			HouseList: [],
 			// 单元列表
@@ -364,19 +365,21 @@ export default {
 		},
 		// 打开选择楼栋列表的dialog,加载楼栋列表
 		openSelectHouseDialog() {
-			this.selectHouseDialogVisible = true;
+            this.selectHouseDialogVisible = true;
+            this.queryInfo.query = '';
 			this.getHouseList();
 		},
 		// 打开选择楼栋列表的dialog，加载单元列表
 		openSelectUnitDialog() {
-			this.selectUnitDialogVisible = true;
+            this.selectUnitDialogVisible = true;
+            this.queryInfo.query = '';
 			this.getUnitList();
 		},
 		// 选择楼栋
 		chooseHouse(id) {
 			this.currentHouse = this.HouseList.find(h => h.house_id === id);
-            this.currentHouseId = id;
-            this.room.house_id = id;
+			this.currentHouseId = id;
+			this.room.house_id = id;
 			this.selectHouseDialogVisible = false;
 			this.isSelect_house = true;
 		},
@@ -384,16 +387,16 @@ export default {
 		handleCurrentChange_house(newPage) {
 			this.queryInfo.pagenum = newPage;
 			this.getHouseList();
-        },
-        // 监听页码值
+		},
+		// 监听页码值
 		handleCurrentChange_unit(newPage) {
 			this.queryInfo.pagenum = newPage;
 			this.getUnitList();
 		},
 		// 选择单元
 		chooseUnit(id) {
-            this.room.unit_id = id;
-            this.currentUnitId = id;
+			this.room.unit_id = id;
+			this.currentUnitId = id;
 			this.currentUnit = this.UnitList.find(u => u.id === id);
 			this.selectUnitDialogVisible = false;
 			this.isSelect_unit = true;
@@ -413,10 +416,17 @@ export default {
 		async addRoom() {
 			const { data: res } = await this.$http.post('addRoom', this.room);
 			if (res.code === 200) {
-                this.$router.push('/room');
+				this.$router.push('/room');
 				return this.$message.success(res.msg);
 			}
-		}
+        },
+        searchHouse() {
+            this.getHouseList();
+        },
+        searchUnit() {
+            this.getUnitList();
+        }
+
 	}
 };
 </script>
