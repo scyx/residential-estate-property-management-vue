@@ -89,7 +89,7 @@
               class="add-input"
               v-model="addForm.start_time"
               :default-time="this.getTime()"
-              type="date"
+              type="datetime"
               placeholder="选择日期"
             ></el-date-picker>
           </el-form-item>
@@ -335,7 +335,7 @@ export default {
 				disabledDate(time) {
 					return time.getTime() < Date.now() - 8.64e6; // 如果没有后面的-8.64e6就是不可以选择今天的
 				}
-			},
+            },
 			rules: {
 				fee_type: [
 					{

@@ -42,6 +42,7 @@
                   class="search-input"
                   type="date"
                   placeholder="选择日期"
+                  :picker-options="pickerOptions0"
                   v-model="form.birthday"
                 ></el-date-picker>
               </el-form-item>
@@ -188,9 +189,8 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>物业费用</el-dropdown-item>
-                <el-dropdown-item>停车费用</el-dropdown-item>
-                <el-dropdown-item>业主报修</el-dropdown-item>
+                <el-dropdown-item @click.native="toPaymentList(scope.row.household_name)">缴费信息</el-dropdown-item>
+                <el-dropdown-item @click.native="toRepair(scope.row.household_name)">业主报修</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -214,6 +214,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
 	data() {
 		return {
 			queryInfo: {
@@ -291,6 +292,14 @@ export default {
 		this.getHouseHoldList();
 	},
 	methods: {
+        toRepair(name) {
+            this.$router.push({ path: 'sendOrders', query: { HouseHoldName: name } });
+            this.reload();
+        },
+        toPaymentList(name) {
+            this.$router.push({ path: 'PaymentList', query: { HouseHoldName: name } });
+            this.reload();
+        },
 		// 获取业主列表
 		async getHouseHoldList() {
 			const { data: res } = await this.$http.get('households', {

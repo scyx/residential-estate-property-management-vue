@@ -100,17 +100,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        style="float:right;margin:20px;"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="queryInfo.pagenum"
-        :page-sizes="[5, 10, 15, 20]"
-        :page-size="queryInfo.pagesize"
-        background
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
     </el-card>
   </div>
 </template>

@@ -105,19 +105,52 @@
         :cell-style="{'padding':'5px'}"
         :row-style="{'padding':'0'}"
       >
-        <el-table-column align="center" type="index" prop="index" label="#" width="100"></el-table-column>
+        <el-table-column align="center" type="index" prop="index" label="#" width="60"></el-table-column>
         <el-table-column prop="username" align="center" label="用户名" min-width="150"></el-table-column>
         <el-table-column prop="password" type="password" align="center" label="密码" width="150">
           <template slot-scope>******</template>
         </el-table-column>
-        <el-table-column prop="name" align="center" label="姓名" width="200"></el-table-column>
-        <el-table-column prop="gender" align="center" label="性别" width="100"></el-table-column>
+        <el-table-column prop="name" align="center" label="姓名" width="150"></el-table-column>
+        <el-table-column prop="gender" align="center" label="性别" width="50"></el-table-column>
         <el-table-column prop="telephone" align="center" label="手机" width="200"></el-table-column>
-        <el-table-column align="center" label="操作" min-width="300">
+        <el-table-column align="center" label="操作" min-width="450">
           <template slot-scope="scope">
             <el-button size="mini" class="edit-button" @click="reset(scope.row.id)">重置密码</el-button>
             <el-button size="mini" class="edit-button" @click="showEditDialog(scope.row.id)">修改信息</el-button>
             <el-button size="mini" class="edit-button" @click="deleteById(scope.row.id)">删除用户</el-button>
+            <el-button
+              size="mini"
+              class="edit-button"
+              @click="showDistributeDialog(scope.row.id,scope.row.username)"
+            >分配权限组</el-button>
+            <el-dialog
+              title="分配权限组"
+              :visible.sync="distributeDialogVisible"
+              :width="distributeDialogWidth"
+              @close="closeDialog('editForm','distributeDialogVisible')"
+            >
+              <div class="distribute">
+                <p>当前用户:{{editForm.username}}</p>
+                <p>当前用户所属权限组：{{editForm.authority_group_name}}</p>
+                <p>
+                  分配新权限组：
+                  <el-select v-model="distributeGroupId" placeholder="请选择">
+                    <el-option
+                      v-for="item in groupLIst"
+                      :key="item.authority_group_id"
+                      :label="item.authority_group_name"
+                      :value="item.authority_group_id"
+                    ></el-option>
+                  </el-select>
+                </p>
+              </div>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="closeDialog('editForm','distributeDialogVisible')">取 消</el-button>
+                <el-button type="primary" @click="distributeGroup()">
+                  <i class="fa fa-check"></i>保 存
+                </el-button>
+              </div>
+            </el-dialog>
           </template>
         </el-table-column>
       </el-table>
@@ -139,6 +172,12 @@ export default {
 		return {
 			addDialogVisible: false,
 			editDialogVisible: false,
+			distributeDialogVisible: false,
+			userName_current_distribute: '',
+			currentUser: {},
+			groupLIst: [],
+			distributeForm: {},
+			distributeGroupId: '',
 			queryInfo: {
 				query: '',
 				pagenum: 1,
@@ -147,6 +186,7 @@ export default {
 			UserList: [],
 			total: 0,
 			dialog_width: '350px',
+			distributeDialogWidth: '600px',
 			formLabelWidth: '80px',
 			form: {},
 			editForm: {},
@@ -202,6 +242,27 @@ export default {
 		this.getUserList();
 	},
 	methods: {
+		async distributeGroup() {
+			if (this.distributeGroupId === '') {
+				return this.$message.error('请先选择权限组');
+			}
+			const { data: res } = await this.$http.post(
+				'distributeGroup/' +
+					this.editForm.id +
+					'/' +
+					this.distributeGroupId
+			);
+			if (res.code === 200) {
+				this.distributeDialogVisible = false;
+				this.$message.success('分配成功！');
+			}
+		},
+		showDistributeDialog(id, userName) {
+			this.distributeGroupId = '';
+			this.distributeDialogVisible = true;
+			this.getAuthorityGroupList();
+			this.selectByUserId(id);
+		},
 		async checkUserNameisExist(username) {
 			const { data: res } = await this.$http.get('checkUserNameisExist', {
 				params: {
@@ -337,10 +398,20 @@ export default {
 				this.$message.success('重置成功!');
 				this.getUserList();
 			}
+		},
+		async getAuthorityGroupList() {
+			const { data: res } = await this.$http.get('getAuthorityGroupList');
+			this.groupLIst = res.data;
 		}
 	}
 };
 </script>
 
-<style>
+<style scoped>
+.distribute {
+	text-align: center;
+}
+p {
+	text-align: left;
+}
 </style>

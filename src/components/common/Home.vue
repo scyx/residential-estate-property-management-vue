@@ -23,7 +23,7 @@
           <el-submenu :index="'/'+item.path" v-for="item in menulist" :key="item.psid">
             <template slot="title">
               <i :class="iconobj[item.psid]"></i>
-              <span style="padding-right:40px; user-select: none;">{{item.name}}</span>
+              <span style="padding-right:40px; user-select: none;">{{item.label}}</span>
             </template>
             <!-- 二级菜单 -->
             <el-menu-item
@@ -34,7 +34,7 @@
             >
             <div  class="menuitem-content">
                 <i class="el-icon-menu"></i>
-              <span slot="title" style="user-select: none;">{{subitem.name}}</span>
+              <span slot="title" style="user-select: none;">{{subitem.label}}</span>
             </div>
             </el-menu-item>
           </el-submenu>
@@ -91,14 +91,17 @@ export default {
 			// 当前菜单
 			activepath: '',
             username: '',
+            authorityGroupId: '',
             aside_text_iscollapse: '物',
             aside_text_isnotcollapse: '物业管理系统',
 		};
 	},
 	created() {
-		this.getMenuList();
+        this.getMenuList();
+        this.getPathList();
 		this.activepath = window.sessionStorage.getItem('activepath');
-		this.username = window.sessionStorage.getItem('username');
+        this.username = window.sessionStorage.getItem('username');
+        this.authorityGroupId = window.sessionStorage.getItem('authorityGroupId');
 	},
 	methods: {
 		// 登出
@@ -114,9 +117,15 @@ export default {
 		},
 		// 获取菜单列表
 		async getMenuList() {
-			const { data: res } = await this.$http.get('getMenuList');
+			const { data: res } = await this.$http.get('getMenuList/' + window.sessionStorage.getItem('authorityGroupId'));
 			if (res.code !== 200) return this.$message.error(res.msg);
-			this.menulist = res.data;
+            this.menulist = res.data;
+            console.log(this.menulist);
+        },
+        async getPathList() {
+			const { data: res } = await this.$http.get('getPathList/' + window.sessionStorage.getItem('authorityGroupId'));
+			if (res.code !== 200) return this.$message.error(res.msg);
+            window.sessionStorage.setItem('pathList', res.data);
 		},
 		// 收起&&展开侧边栏
 		changecollapse() {

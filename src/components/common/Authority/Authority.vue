@@ -1,5 +1,5 @@
 <template>
-<!-- 权限组页面 -->
+  <!-- 权限组页面 -->
   <div>
     <el-card class="f-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -19,11 +19,16 @@
             <el-divider></el-divider>
             <el-form :model="addForm" ref="addForm" size="medium" :rules="rules">
               <el-form-item label="权限组名称" :label-width="formLabelWidth" prop="name">
-                <el-input class="add-input" v-model="addForm.name" autocomplete="off" placeholder="必填，请填写权限组名称"></el-input>
+                <el-input
+                  class="add-input"
+                  v-model="addForm.name"
+                  autocomplete="off"
+                  placeholder="必填，请填写权限组名称"
+                ></el-input>
               </el-form-item>
               <el-form-item label="权限组描述" :label-width="formLabelWidth" prop="description">
                 <el-input
-                class="add-input"
+                  class="add-input"
                   v-model="addForm.description"
                   autocomplete="off"
                   placeholder="必填，请填写权限组描述"
@@ -39,7 +44,7 @@
               >取 消</el-button>
               <el-button class="save" @click="submitAddForm">
                 <i class="fa fa-check"></i>
-                保存
+                保 存
               </el-button>
             </div>
           </el-dialog>
@@ -48,7 +53,7 @@
           </div>
           <ul class="category-list">
             <li v-for="item in authority_group_list" :key="item.authority_group_id" class="item_li">
-              <a @click="changeGroup(item.authority_group_name)">
+              <a @click="changeGroup(item.authority_group_name,item.authority_group_id)">
                 <strong>
                   <i class="el-icon-arrow-right"></i>
                 </strong>
@@ -72,22 +77,45 @@
             class="selectButton"
             size="medium"
             icon="el-icon-plus"
+            @click="openAddAuthorityDialog"
           >添加权限</el-button>
         </div>
         <el-divider></el-divider>
         <el-table
-          :data="tableData"
+          :data="itemList"
           style="width: 100%"
           :header-row-style="{'font-size':'13px','color':'black'}"
           :cell-style="{'padding':'5px'}"
           :row-style="{'padding':'0'}"
         >
-          <el-table-column prop="date" label="#" width="180" align="center"></el-table-column>
-          <el-table-column prop="date" label="权限名称" width="180" align="center"></el-table-column>
-          <el-table-column prop="name" label="权限描述" align="center" width="350"></el-table-column>
-          <el-table-column prop="address" label="创建时间" width="300" align="center"></el-table-column>
-          <el-table-column prop="address" label="操作" width="100" align="center"></el-table-column>
+          <el-table-column type="index" label="#" width="180" align="center"></el-table-column>
+          <el-table-column prop="label" label="权限名称" width="500" align="center"></el-table-column>
+          <el-table-column align="center" label="操作" min-width="250">
+            <template slot-scope="scope">
+              <el-button size="mini" class="edit-button" @click="deleteItemById(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
+        <el-dialog title="提示" :visible.sync="addAuthorityDialogVisible" width="30%">
+          <el-tree
+            :data="authorityList"
+            node-key="psid"
+            show-checkbox
+            :default-expand-all="true"
+            ref="treeRef"
+          ></el-tree>
+          <div slot="footer" class="dialog-footer">
+            <el-button
+              style="color:white;"
+              type="warning"
+              @click="closeDialog('','addAuthorityDialogVisible')"
+            >取 消</el-button>
+            <el-button class="save" @click="addAuthority()">
+              <i class="fa fa-check"></i>
+              确 定
+            </el-button>
+          </div>
+        </el-dialog>
       </el-card>
     </div>
   </div>
@@ -97,19 +125,22 @@
 export default {
 	data() {
 		return {
-            dialog_width: '350px',
-            // 权限组列表
-            authority_group_list: [],
-            // 权限组表单可见变量
+			dialog_width: '350px',
+			// 权限组列表
+			authority_group_list: [],
+			// 权限组表单可见变量
 			addFormVisible: false,
-            formLabelWidth: '100px',
-            // 添加权限组表单
+			addAuthorityDialogVisible: false,
+			formLabelWidth: '100px',
+			// 添加权限组表单
 			addForm: {
 				name: '',
 				description: ''
 			},
-            title: '物业管理员权限组',
-            tableData: [],
+			title: '物业管理员权限组',
+			currentAuthorityGroupId: '',
+			authorityList: [],
+			itemList: [],
 			rules: {
 				name: [
 					{
@@ -132,19 +163,46 @@ export default {
 		this.getAuthorityGroupList();
 	},
 	methods: {
+		async addAuthority() {
+			const authorityList = [
+				...this.$refs.treeRef.getCheckedNodes(),
+				...this.$refs.treeRef.getHalfCheckedNodes()
+			];
+			if (authorityList.length === 0) {
+				return this.$message.error('请先选择权限');
+			}
+			const { data: res } = await this.$http.post(
+				'addAuthorityByGroupId/' + this.currentAuthorityGroupId,
+				authorityList
+			);
+			if (res.code !== 200) {
+				return this.$message.error('提交失败！');
+            }
+            this.$message.success('添加成功');
+			this.getAuthorityListByGroupId();
+			this.closeDialog('', 'addAuthorityDialogVisible');
+		},
 		// 获取权限组列表
 		async getAuthorityGroupList() {
 			const { data: res } = await this.$http.get('getAuthorityGroupList');
 			this.authority_group_list = res.data;
+			this.currentAuthorityGroupId = this.authority_group_list[0].authority_group_id;
+			this.getAuthorityListByGroupId();
 			console.log(res);
 		},
 		// 打开表单
 		openAddForm() {
 			this.addFormVisible = true;
 		},
+		openAddAuthorityDialog() {
+			this.addAuthorityDialogVisible = true;
+			this.getPermissionList();
+		},
 		// 修改组
-		changeGroup(name) {
+		changeGroup(name, id) {
 			this.title = name;
+			this.currentAuthorityGroupId = id;
+			this.getAuthorityListByGroupId();
 		},
 		// 验证表单，通过后添加
 		submitAddForm() {
@@ -184,14 +242,16 @@ export default {
 				}
 			)
 				.then(() => {
-					this.deleteGroup(id);
+                    this.deleteGroup(id);
+                    this.currentAuthorityGroupId = this.authority_group_list[0].authority_group_id;
+                    this.title = this.authority_group_list[0].authority_group_name;
 				})
 				.catch(() => {
 					this.$message({
 						type: 'info',
 						message: '已取消删除'
 					});
-				});
+                });
 		},
 		// 删除
 		async deleteGroup(gid) {
@@ -205,9 +265,54 @@ export default {
 			this.$message.success('删除成功');
 			this.getAuthorityGroupList();
 		},
-		to() {
-			this.towelcome();
-		}
+		async getPermissionList() {
+			const { data: res } = await this.$http.get('getPermissionList/' + this.currentAuthorityGroupId);
+			if (res.code !== 200) return this.$message.error(res.msg);
+            this.authorityList = res.data;
+            // if (this.itemList.length !== 0) {
+            //     for (var )
+            // }
+			console.log(this.authorityList);
+		},
+		async getAuthorityListByGroupId() {
+			const { data: res } = await this.$http.get(
+				'getAuthorityListByGroupId/' + this.currentAuthorityGroupId
+			);
+			if (res.code !== 200) return this.$message.error(res.msg);
+			this.itemList = res.data;
+			console.log(this.itemList);
+        },
+        // 删除权限组操作
+		deleteItemById(id) {
+			this.$confirm(
+				'此操作将从该组中删除该权限, 是否继续?',
+				'提示',
+				{
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}
+			)
+				.then(() => {
+                    this.deleteItem(id);
+				})
+				.catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+                });
+		},
+		async deleteItem(groupId) {
+			const { data: res } = await this.$http.delete(
+				'deleteItemById/' + groupId
+			);
+			if (res.code !== 200) {
+				return this.$message.error('删除失败！');
+			}
+			this.$message.success('删除成功');
+			this.getAuthorityListByGroupId();
+		},
 	}
 };
 </script>
@@ -226,7 +331,8 @@ export default {
 	display: inline-flex;
 }
 .operate {
-	width: 500px;
+    height:fit-content;
+    width: 30%;
 	float: left;
 }
 h5 {
@@ -235,8 +341,8 @@ h5 {
 	font-weight: 600;
 }
 .addButton {
-    min-width: 300px;
-    box-sizing: border-box;
+	min-width: 300px;
+	box-sizing: border-box;
 	background-color: #1ab394;
 	border: 0ch;
 }
@@ -282,9 +388,8 @@ h5 {
 }
 .main {
 	float: left;
-	display: inline-flex;
+    width: 70%;
 	margin-left: 10px;
-	width: 1165px;
 }
 .main h3 {
 	width: 500px;

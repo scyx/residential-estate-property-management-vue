@@ -62,7 +62,7 @@
         <div slot="header" class="card">
           <h2>公告</h2>
         </div>
-        <el-collapse  @change="handleChange" accordion>
+        <el-collapse  accordion>
           <el-collapse-item v-for=" item in numGroup.noticeList" :title="item.title" :name="item.id" :key="item.id">
             <span>
                 {{item.content}}
@@ -105,6 +105,7 @@ export default {
   justify-content: left;
 }
 .box-card {
+    width: 100%;
   margin-bottom: 15px;
 }
 .announcement {
@@ -116,6 +117,7 @@ h2 {
   margin-top: 15px;
 }
 .sta {
+    width: fit-content;
   float: right;
   margin-top: 15px;
 }
@@ -131,6 +133,7 @@ h2 {
   line-height: 100%;
 }
 .contain {
+    width: 100%;
   margin-right: 15%;
 }
 </style>

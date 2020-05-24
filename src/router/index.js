@@ -6,6 +6,7 @@ import Home from '../components/common/Home.vue';
 import Welcome from '../components/common/Welcome.vue';
 import Household from '../components/common/household/Household.vue';
 import Authority from '../components/common/Authority/Authority.vue';
+import notfound from '../components/common/Authority/404.vue';
 import User from '../components/common/User.vue';
 import HouseholdOwnMember from '../components/common/household/HouseholdOwnMember.vue';
 import House from '../components/common/Property/House.vue';
@@ -32,6 +33,13 @@ const routes = [{
         component: Login,
         meta: {
             title: '登录'
+        }
+    },
+    {
+        path: '/404',
+        component: notfound,
+        meta: {
+            title: '未找到'
         }
     },
     {
@@ -186,19 +194,52 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes,
 });
-
 router.beforeEach((to, from, next) => {
-    window.document.title = to.meta.title;
-    window.sessionStorage.setItem('activepath', to.path);
-    next();
+    const token = window.sessionStorage.getItem('token');
+    const list = window.sessionStorage.getItem('pathList');
+    // console.log(from.path);
+    // console.log(list.indexOf(to.path.slice(1)));
+    if ((to.path === '/editNotice' || to.path === '/noticeDetail') && list !== null && list.indexOf('notice') > 0) {
+        window.document.title = to.meta.title;
+        window.sessionStorage.setItem('activepath', to.path);
+        return next();
+    }
+    if (to.path === '/AddComplaintAndAdvice' && list !== null && list.indexOf('complaintsAndAdvice') > 0) {
+        window.document.title = to.meta.title;
+        window.sessionStorage.setItem('activepath', to.path);
+        return next();
+    }
+    if (to.path === '/addRoom' && list !== null && list.indexOf('room') > 0) {
+        window.document.title = to.meta.title;
+        window.sessionStorage.setItem('activepath', to.path);
+        return next();
+    }
+    if (to.path === '/login' || to.path === '/404') {
+        window.document.title = to.meta.title;
+        window.sessionStorage.setItem('activepath', to.path);
+        return next();
+    }
+    if (!token) {
+        return next('/login');
+    }
+    if (to.path === '/welcome') {
+        window.document.title = to.meta.title;
+        window.sessionStorage.setItem('activepath', to.path);
+        return next();
+    }
+    if (list !== null && list.indexOf(to.path.slice(1)) < 0) {
+        return next('/404');
+    }
+    if (list !== null && list.indexOf(to.path.slice(1)) > 0) {
+        window.document.title = to.meta.title;
+        window.sessionStorage.setItem('activepath', to.path);
+        next();
+    }
+    // 获取token
     // to：将要访问的路径
     // from： 从哪个路径跳转过来
     // next： 表示放行 是一个函数
-    if (to.path === '/login') return next();
-    // 获取token
-    const token = window.sessionStorage.getItem('token');
-    if (!token) return next('/login');
-    next();
+    // next();
 });
 
 export default router;

@@ -205,120 +205,92 @@
       <el-divider></el-divider>
       <div v-show="this.active === 0">
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>楼名称：</label>
-              {{this.currentHouse.house_name}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>楼名称：</label>
+            {{this.currentHouse.house_name}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>备注：</label>
-              {{this.currentHouse.remark}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>备注：</label>
+            {{this.currentHouse.remark}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>创建时间：</label>
-              {{this.currentHouse.create_date}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>创建时间：</label>
+            {{this.currentHouse.create_date}}
+          </div>
         </el-row>
       </div>
       <div v-show="this.active === 1">
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>单元编号：</label>
-              {{this.currentUnit.unit_id}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>单元编号：</label>
+            {{this.currentUnit.unit_id}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>总层数：</label>
-              {{this.currentUnit.level}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>总层数：</label>
+            {{this.currentUnit.level}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>是否有电梯：</label>
-              {{this.currentUnit.has_lift}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>是否有电梯：</label>
+            {{this.currentUnit.has_lift}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>备注：</label>
-              {{this.currentUnit.remark}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>备注：</label>
+            {{this.currentUnit.remark}}
+          </div>
         </el-row>
       </div>
       <div v-show="this.active === 2">
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>楼栋：</label>
-              {{this.currentHouse.house_name}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>楼栋：</label>
+            {{this.currentHouse.house_name}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>单元：</label>
-              {{this.currentUnit.unit_id}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>单元：</label>
+            {{this.currentUnit.unit_id}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>房屋：</label>
-              {{this.currentRoom.room_id}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>房屋：</label>
+            {{this.currentRoom.room_id}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>楼层：</label>
-              {{this.currentRoom.floor_num}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>楼层：</label>
+            {{this.currentRoom.floor_num}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>面积：</label>
-              {{this.currentRoom.area}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>面积：</label>
+            {{this.currentRoom.area}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>备注：</label>
-              {{this.currentRoom.remark}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>备注：</label>
+            {{this.currentRoom.remark}}
+          </div>
         </el-row>
         <el-row>
-          <el-col span="50">
-            <div class="in-col">
-              <label>户型：</label>
-              {{this.currentRoom.room_num}}{{this.currentRoom.hall_num}}
-            </div>
-          </el-col>
+          <div class="in-col">
+            <label>户型：</label>
+            {{this.currentRoom.room_num}}{{this.currentRoom.hall_num}}
+          </div>
         </el-row>
       </div>
       <el-form
@@ -604,17 +576,18 @@ h3 {
 	display: inline-flex;
 }
 .el-row {
+    display: block;
 	margin-top: 20px !important;
-	left: 38.5%;
 }
 .in-col {
-	width: 100%;
-	text-align: center;
+	width:100%;
+    text-align: left;
 }
 label {
-	display: inline-block;
-	text-align: right;
-	width: 200px;
+    margin-left: 31%;
+        display: inline-block;
+        width: 20%;
+        text-align: right;
 }
 .add-room-input {
 	width: 500px;

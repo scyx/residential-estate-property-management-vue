@@ -60,6 +60,8 @@
         <el-table-column prop="parking_number" align="center" label="车位编号" min-width="100"></el-table-column>
         <el-table-column prop="area" align="center" label="面积" min-width="100"></el-table-column>
         <el-table-column prop="status" align="center" label="状态" min-width="150"></el-table-column>
+        <el-table-column prop="owner" align="center" label="车位主人" min-width="150"></el-table-column>
+        <el-table-column prop="owner_telephone" align="center" label="车位主人电话" min-width="150"></el-table-column>
         <el-table-column align="center" label="操作" min-width="200">
           <template slot-scope="scope">
             <el-button size="mini" class="edit-button" @click="showEditDialog(scope.row.id)">修改</el-button>
@@ -101,6 +103,12 @@
               <el-option v-for="item in statusList" :key="item.id" :value="item"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="车位主人" prop="owner" :label-width="formLabelWidth" v-if="addForm.status !== '空闲'">
+            <el-input class="add-input" v-model="addForm.owner" autocomplete="off" placeholder="请输入车位主人"></el-input>
+          </el-form-item>
+          <el-form-item label="主人电话" prop="owner_telephone" :label-width="formLabelWidth" v-if="addForm.status !== '空闲'" >
+            <el-input class="add-input" v-model="addForm.owner_telephone" autocomplete="off" placeholder="请输入主人电话"></el-input>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="closeDialog('addForm','addDialogVisible')">取 消</el-button>
@@ -132,6 +140,12 @@
             >
               <el-option v-for="item in statusList" :key="item.id" :value="item"></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="车位主人" prop="owner" :label-width="formLabelWidth"  v-if="editForm.status !== '空闲'">
+            <el-input class="add-input" v-model="editForm.owner" autocomplete="off" placeholder="请输入车位主人"></el-input>
+          </el-form-item>
+           <el-form-item label="主人电话" prop="owner_telephone" :label-width="formLabelWidth"  v-if="editForm.status !== '空闲'">
+            <el-input class="add-input" v-model="editForm.owner_telephone" autocomplete="off" placeholder="请输入车位主人电话" ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -186,6 +200,21 @@ export default {
 						message: '请输入车位面积',
 						trigger: 'blur'
 					}
+                ],
+                owner: [
+					{
+						required: true,
+						message: '请输入车位主人',
+						trigger: 'blur'
+					}
+                ],
+                owner_telephone: [
+					{
+						required: true,
+						message: '请输入车位主人电话',
+						trigger: 'blur'
+                    },
+                    { validator: this.checkTelephone, trigger: 'blur' }
 				],
 			}
 		};

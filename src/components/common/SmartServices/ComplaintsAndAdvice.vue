@@ -159,7 +159,8 @@ export default {
 						required: true,
 						trigger: 'blur',
 						message: '请输入投诉电话'
-					}
+                    },
+                     { validator: this.checkTelephone, trigger: 'blur' }
 				],
 				type: [
 					{

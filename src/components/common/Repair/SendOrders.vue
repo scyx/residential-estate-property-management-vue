@@ -112,7 +112,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="报修内容" prop="repair_content" :label-width="formLabelWidth">
-            <el-input type="textarea" autosize class="add-input" v-model="addForm.repair_content" autocomplete="off"></el-input>
+            <el-input
+              type="textarea"
+              autosize
+              class="add-input"
+              v-model="addForm.repair_content"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -123,7 +129,7 @@
           </el-button>
         </div>
       </el-dialog>
-        <el-dialog
+      <el-dialog
         title="报修详情"
         :visible.sync="InfoDialogVisible"
         :width="dialog_width"
@@ -141,7 +147,7 @@
           </el-form-item>
           <el-form-item label="报修类型" prop="type" :label-width="formLabelWidth">
             <el-select
-            disabled
+              disabled
               v-model="addForm.type"
               prop="gender"
               placeholder="请选择报修类型"
@@ -151,7 +157,14 @@
             </el-select>
           </el-form-item>
           <el-form-item label="报修内容" prop="repair_content" :label-width="formLabelWidth">
-            <el-input type="textarea" autosize disabled class="add-input" v-model="addForm.repair_content" autocomplete="off"></el-input>
+            <el-input
+              type="textarea"
+              autosize
+              disabled
+              class="add-input"
+              v-model="addForm.repair_content"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -190,8 +203,8 @@ export default {
 				}
 			},
 			dialog_width: '350px',
-            addDialogVisible: false,
-            InfoDialogVisible: false,
+			addDialogVisible: false,
+			InfoDialogVisible: false,
 			rules: {
 				repairer: [
 					{
@@ -205,7 +218,8 @@ export default {
 						required: true,
 						message: '请输入报修电话',
 						trigger: 'blur'
-					}
+                    },
+                    { validator: this.checkTelephone, trigger: 'blur' }
 				],
 				type: [
 					{
@@ -214,27 +228,43 @@ export default {
 						trigger: 'change'
 					}
 				],
-                repair_content: [{ required: true, message: '请输入报修内容' }],
-                room: [{ required: true, message: '请输入房屋' }]
+				repair_content: [{ required: true, message: '请输入报修内容' }],
+				room: [{ required: true, message: '请输入房屋' }]
 			}
 		};
 	},
 	created() {
-        this.getRepairList();
-    },
+		if (this.$route.query.HouseHoldName > '') {
+            this.queryInfo.repairer = this.$route.query.HouseHoldName;
+            this.getRepairList();
+        } else {
+            this.getRepairList();
+        }
+	},
 	methods: {
-        openInfoDialog(id) {
-            this.InfoDialogVisible = true;
-            this.getRepairById(id);
-        },
-        async getRepairById(id) {
+		// 监听pagesize改变
+		handleSizeChange(newSize) {
+			this.queryInfo.pagesize = newSize;
+			this.getRepairList();
+		},
+		// 监听页码值
+		handleCurrentChange(newPage) {
+			this.queryInfo.pagenum = newPage;
+			this.getRepairList();
+		},
+
+		openInfoDialog(id) {
+			this.InfoDialogVisible = true;
+			this.getRepairById(id);
+		},
+		async getRepairById(id) {
 			const { data: res } = await this.$http.get('getRepairById/' + id);
 			console.log(res);
 			if (res.code === 200) {
 				this.addForm = res.data;
 			}
 		},
-        submitForm(formName) {
+		submitForm(formName) {
 			this.$refs[formName].validate(valid => {
 				if (valid) {
 					this.addRepair();
@@ -242,34 +272,37 @@ export default {
 					return false;
 				}
 			});
-        },
-        async addRepair() {
-			const { data: res } = await this.$http.post('addRepair', this.addForm);
+		},
+		async addRepair() {
+			const { data: res } = await this.$http.post(
+				'addRepair',
+				this.addForm
+			);
 			if (res.code === 200) {
 				this.closeDialog('addForm', 'addDialogVisible');
 				this.getRepairList();
 				return this.$message.success(res.msg);
 			}
-        },
-        async getRepairList() {
+		},
+		async getRepairList() {
 			const { data: res } = await this.$http.get('getRepairList', {
 				params: {
-                    repairer: this.queryInfo.repairer,
-                    telephone: this.queryInfo.telephone,
-                    type: this.queryInfo.repairType,
+					repairer: this.queryInfo.repairer,
+					telephone: this.queryInfo.telephone,
+					type: this.queryInfo.repairType,
 					pageNum: this.queryInfo.pagenum,
 					pageSize: this.queryInfo.pagesize
 				}
 			});
 			this.RepairList = res.data.list;
 			this.total = res.data.total;
-		},
-    }
+		}
+	}
 };
 </script>
 
 <style scoped>
 h4 {
-    text-align: left;
+	text-align: left;
 }
 </style>
