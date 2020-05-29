@@ -20,7 +20,7 @@ var checkTelephone = (rule, value, callback) => {
     callback(new Error('请输入合法的手机号'));
 };
 // 请求路径
-axios.defaults.baseURL = 'http://127.0.0.1:8888/';
+axios.defaults.baseURL = 'http://localhost:8888/';
 // 允许携带跨域cookie
 axios.defaults.withCredentials = true;
 // post请求转换
@@ -95,7 +95,7 @@ Vue.prototype.getUnitList = async function () {
         }
     );
     this.UnitList = res.data.list;
-    console.log(res);
+    // console.log(res);
     this.total = res.data.total;
 };
 // 菜单栏激活
@@ -115,7 +115,7 @@ Vue.prototype.getNoticeById = async function (id) {
     } = await this.$http.get('getNoticeById/' + id);
     if (res.code === 200) {
         this.currentNotice = res.data;
-        console.log(this.currentNotice);
+        // console.log(this.currentNotice);
     } else {
         return this.$message.error(
             '获取住户信息失败！该房屋可能不存在'

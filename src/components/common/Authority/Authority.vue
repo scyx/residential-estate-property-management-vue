@@ -88,9 +88,9 @@
           :cell-style="{'padding':'5px'}"
           :row-style="{'padding':'0'}"
         >
-          <el-table-column type="index" label="#" width="180" align="center"></el-table-column>
+          <el-table-column type="index" label="#" width="100" align="center"></el-table-column>
           <el-table-column prop="label" label="权限名称" width="500" align="center"></el-table-column>
-          <el-table-column align="center" label="操作" min-width="250">
+          <el-table-column align="center" label="操作" min-width="200">
             <template slot-scope="scope">
               <el-button size="mini" class="edit-button" @click="deleteItemById(scope.row.id)">删除</el-button>
             </template>

@@ -83,6 +83,10 @@ export default {
 					'username',
 					this.dataList.user.name
                 );
+                window.sessionStorage.setItem(
+					'user_name',
+					this.dataList.user.username
+                );
                 window.sessionStorage.setItem('authorityGroupId', this.dataList.user.authority_group_id);
 				// 编程式导航 到home中
 				this.$router.push('/home');

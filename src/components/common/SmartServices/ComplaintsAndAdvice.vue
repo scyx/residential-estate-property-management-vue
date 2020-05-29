@@ -95,7 +95,7 @@
       <el-dialog
         title="修改信息"
         :visible.sync="editDialogVisible"
-        width="20%"
+        :width="dialog_width"
         @close="closeDialog('complaint','editDialogVisible')"
       >
         <el-form :model="complaint" :rules="rules" ref="complaint">
